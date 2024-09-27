@@ -1,0 +1,6 @@
+name: e:\code\Project List\bert-hfacs\.conda
+channels:
+  - defaults
+dependencies:
+  - python=3.11
+prefix: e:\code\Project List\bert-hfacs\.conda
