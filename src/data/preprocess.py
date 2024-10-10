@@ -28,7 +28,6 @@ data["TARGET_LIST"] = data[
     ["ER (LVL1)", "VIO (LVL1)", "EF (LVL2)", "CO (LVL2)", "PF (LVL2)"]
 ].values.tolist()
 
-
 data = data.drop(
     columns=["ER (LVL1)", "VIO (LVL1)", "EF (LVL2)", "CO (LVL2)", "PF (LVL2)"]
 )
@@ -50,7 +49,7 @@ train_dataset.to_csv(
     index=False,
 )
 test_dataset.to_csv(
-    "/content/drive/MyDrive/Skripsi/Dataset/Subclass/test_dataset_pisah.csv",
+    "E:/code/project-list/bert-hfacs/data/interim/cek.csv",
     index=False,
 )
 

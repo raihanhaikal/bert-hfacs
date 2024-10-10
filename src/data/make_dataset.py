@@ -1,18 +1,5 @@
-# train = pd.read_csv("/content/drive/MyDrive/Skripsi/Dataset/Dataset/Aug After Split/train_dataset_aug.csv", engine="python") # with aug
-train = pd.read_csv(
-    "/content/drive/MyDrive/Skripsi/Dataset/Subclass/modified_train_dataset_pisah_with_target.csv",
-    engine="python",
-)  # no aug
-# valid = pd.read_csv("/content/drive/MyDrive/Skripsi/Dataset/Dataset/Aug After Split/val_dataset.csv", engine="python")
-test = pd.read_csv(
-    "/content/drive/MyDrive/Skripsi/Dataset/Subclass/test_dataset_pisah.csv",
-    engine="python",
-)
-
-train.drop(columns=["Unnamed: 0"], inplace=True)
-
-value_counts_train = train["TARGET_LIST"].value_counts()
-value_counts_test = test["TARGET_LIST"].value_counts()
+import torch
+import ast
 
 
 class CustomDataset:
