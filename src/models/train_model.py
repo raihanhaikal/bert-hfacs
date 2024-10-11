@@ -1,3 +1,8 @@
+import torch
+from tqdm.notebook import tqdm
+from make_model import loss_fn
+
+
 def train_fn(data_loader, model, optimizer, device, scheduler):
     train_loss = 0.0
     model.train()

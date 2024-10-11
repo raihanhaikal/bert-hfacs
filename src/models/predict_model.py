@@ -1,3 +1,8 @@
+import torch
+from models.make_model import loss_fn
+from tqdm.notebook import tqdm
+
+
 def eval_fn(data_loader, model, device):
     eval_loss = 0.0
     model.eval()
