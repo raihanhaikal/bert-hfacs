@@ -2,6 +2,10 @@
 __pycache__/
 *.py[cod]
 
+# virtual env
+.conda
+.venv
+
 # C extensions
 *.so
 
@@ -12,6 +16,7 @@ build/
 develop-eggs/
 dist/
 downloads/
+
 eggs/
 .eggs/
 lib/
@@ -87,6 +92,7 @@ target/
 # Mypy cache
 .mypy_cache/
 
-models/
 
 .venv
+# Ignore the models folder
+models/
