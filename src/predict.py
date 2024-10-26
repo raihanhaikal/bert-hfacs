@@ -23,7 +23,8 @@ if __name__ == "__main__":
 
     model.load_state_dict(
         torch.load(
-            "E:/code/project-list/bert-hfacs/models/model.pth", weights_only=True
+            "E:/code/project-list/bert-hfacs/models/model.pth",
+            weights_only=True,
         )
     )
 
@@ -42,7 +43,6 @@ if __name__ == "__main__":
 
     w2i, i2w = HfacsDataset.LABEL2INDEX, HfacsDataset.INDEX2LABEL
 
-    optimizer = optim.Adam(model.parameters(), lr=5e-6)
     model = model.cuda()
 
     evaluate_model(model, test_loader, i2w=i2w)

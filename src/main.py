@@ -33,10 +33,8 @@ if __name__ == "__main__":
     )
 
     train_dataset_path = "E:/code/project-list/bert-hfacs/data/processed/train.csv"
-    test_dataset_path = "E:/code/project-list/bert-hfacs/data/processed/test.csv"
 
     train_dataset = HfacsDataset(train_dataset_path, tokenizer, lowercase=True)
-    test_dataset = HfacsDataset(test_dataset_path, tokenizer, lowercase=True)
 
     train_loader = HfacsDataloader(
         dataset=train_dataset,
@@ -44,14 +42,6 @@ if __name__ == "__main__":
         batch_size=32,
         num_workers=2,
         shuffle=True,
-        pin_memory=True,
-    )
-    test_loader = HfacsDataloader(
-        dataset=test_dataset,
-        max_seq_len=512,
-        batch_size=32,
-        num_workers=2,
-        shuffle=False,
         pin_memory=True,
     )
 

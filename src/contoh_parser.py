@@ -79,6 +79,52 @@ def get_parser():
     return args
 
 
+def append_dataset_args(args):
+    if args["dataset"] == "emotion-twitter":
+        args["task"] = "sequence_classification"
+        args["num_labels"] = EmotionDetectionDataset.NUM_LABELS
+        args["dataset_class"] = EmotionDetectionDataset
+        args["dataloader_class"] = EmotionDetectionDataLoader
+        args["forward_fn"] = forward_sequence_classification
+        args["metrics_fn"] = emotion_detection_metrics_fn
+        args["valid_criterion"] = "F1"
+        args["train_set_path"] = "./dataset/emot_emotion-twitter/train_preprocess.csv"
+        args["valid_set_path"] = "./dataset/emot_emotion-twitter/valid_preprocess.csv"
+        args["test_set_path"] = (
+            "./dataset/emot_emotion-twitter/test_preprocess_masked_label.csv"
+        )
+        args["vocab_path"] = "./dataset/emot_emotion-twitter/vocab_uncased.txt"
+        args["embedding_path"] = {
+            "fasttext-cc-id-300-no-oov-uncased": "./embeddings/fasttext-cc-id/cc.id.300_no-oov_emotion-twitter_uncased.txt",
+            "fasttext-4B-id-300-no-oov-uncased": "./embeddings/fasttext-4B-id-uncased/fasttext.4B.id.300.epoch5_uncased_no-oov_emotion-twitter_uncased.txt",
+        }
+        args["k_fold"] = 1
+        args["word_tokenizer_class"] = TweetTokenizer
+    elif args["dataset"] == "absa-airy":
+        args["task"] = "multi_label_classification"
+        args["num_labels"] = AspectBasedSentimentAnalysisAiryDataset.NUM_LABELS
+        args["dataset_class"] = AspectBasedSentimentAnalysisAiryDataset
+        args["dataloader_class"] = AspectBasedSentimentAnalysisDataLoader
+        args["forward_fn"] = forward_sequence_multi_classification
+        args["metrics_fn"] = absa_metrics_fn
+        args["valid_criterion"] = "F1"
+        args["train_set_path"] = "./dataset/hoasa_absa-airy/train_preprocess.csv"
+        args["valid_set_path"] = "./dataset/hoasa_absa-airy/valid_preprocess.csv"
+        args["test_set_path"] = (
+            "./dataset/hoasa_absa-airy/test_preprocess_masked_label.csv"
+        )
+        args["vocab_path"] = "./dataset/hoasa_absa-airy/vocab_uncased.txt"
+        args["embedding_path"] = {
+            "fasttext-cc-id-300-no-oov-uncased": "./embeddings/fasttext-cc-id/cc.id.300_no-oov_absa-airy_uncased.txt",
+            "fasttext-4B-id-300-no-oov-uncased": "./embeddings/fasttext-4B-id-uncased/fasttext.4B.id.300.epoch5_uncased_no-oov_absa-airy_uncased.txt",
+        }
+        args["k_fold"] = 1
+        args["word_tokenizer_class"] = TweetTokenizer
+    else:
+        raise ValueError(f'Unknown dataset name `{args["dataset"]}`')
+    return args
+
+
 def get_eval_parser():
     parser = ArgumentParser()
     parser.add_argument(
