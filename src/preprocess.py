@@ -1,27 +1,38 @@
 import re
 import string
+import pandas as pd
 from sklearn.model_selection import train_test_split
+
+data_train = pd.read_csv("E:/code/project-list/bert-hfacs/data/processed/train.csv")
 
 
 # Fungsi untuk membersihkan teks
-def clean_text(text, remove_stopwords=False):
-    text = text.lower()  # Mengubah teks menjadi huruf kecil
-    text = re.sub(
-        r"http\S+|www\S+|https\S+", "", text, flags=re.MULTILINE
+def clean_text(data):
+    data["text"] = data["text"].str.lower()  # Mengubah teks menjadi huruf kecil
+    data["text"] = data["text"].str.replace(
+        r"http\S+|www\S+|https\S+", "", regex=True
     )  # Menghapus URL
-    text = re.sub(r"\S+@\S+", "", text)  # Menghapus email
-    text = re.sub(r"<.*?>", "", text)  # Menghapus tag HTML
-    text = re.sub(r"\d+", "", text)  # Menghapus angka
-    text = text.translate(
-        str.maketrans("", "", string.punctuation)
+    data["text"] = data["text"].str.replace(
+        r"\S+@\S+", "", regex=True
+    )  # Menghapus email
+    data["text"] = data["text"].str.replace(
+        r"<.*?>", "", regex=True
+    )  # Menghapus tag HTML
+    data["text"] = data["text"].str.replace(r"\d+", "", regex=True)  # Menghapus angka
+    data["text"] = data["text"].str.replace(
+        f"[{re.escape(string.punctuation)}]", "", regex=True
     )  # Menghapus tanda baca
-    text = re.sub(r"[^\x00-\x7f]", r"", text)  # Menghapus karakter khusus
-    text = re.sub(r"\s+", " ", text).strip()  # Menghapus spasi berlebih
+    data["text"] = data["text"].str.replace(
+        r"[^\x00-\x7f]", "", regex=True
+    )  # Menghapus karakter khusus
+    data["text"] = (
+        data["text"].str.replace(r"\s+", " ", regex=True).str.strip()
+    )  # Menghapus spasi berlebih
 
-    if remove_stopwords:
-        text = " ".join([word for word in text.split() if word not in stop_words])
+    return data
 
-    return text
+
+data_clean = clean_text(data_train)
 
 
 def preprocessed(data):
