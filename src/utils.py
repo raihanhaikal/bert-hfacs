@@ -1,7 +1,5 @@
 import torch
 from sklearn.metrics import accuracy_score, f1_score, recall_score, precision_score
-import pickle
-from sklearn.feature_extraction.text import TfidfVectorizer
 
 
 # Forward function for sequence classification
@@ -70,12 +68,3 @@ def metrics_to_string(metric_dict):
     for key, value in metric_dict.items():
         string_list.append("{}:{:.2f}".format(key, value))
     return " ".join(string_list)
-
-
-def vectorize_data(data):
-    # Transforming text data into TF-IDF features
-    vectorizer = TfidfVectorizer(
-        max_features=5000
-    )  # Limiting to 5000 features for efficiency
-    data = vectorizer.fit_transform(data)
-    data

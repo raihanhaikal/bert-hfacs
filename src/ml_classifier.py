@@ -6,16 +6,7 @@ from sklearn.naive_bayes import MultinomialNB
 from sklearn.metrics import classification_report, accuracy_score
 from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
 from Sastrawi.StopWordRemover.StopWordRemoverFactory import StopWordRemoverFactory
-
-
-"""
-def tokenize(data):
-    data["text"] = data["text"].apply(lambda x: re.findall(r"\b\w+\b", str(x)))
-    return data
-
-
-tokenize(data_train)
-"""
+from argparse import ArgumentParser
 
 
 def stemming(data):
@@ -80,34 +71,88 @@ def ml_eval(text, label, model_path):
     return accuracy, report
 
 
-######## TRAIN ########
-data_train = pd.read_csv("E:/code/project-list/bert-hfacs/data/processed/train.csv")
+def get_parser_ml():
+    parser = ArgumentParser()
+    # Argumen untuk memilih mode (train atau eval)
+    parser.add_argument(
+        "--mode",
+        type=str,
+        choices=["train", "eval"],
+        required=True,
+        help="Pilih mode operasi: 'train' untuk pelatihan atau 'eval' untuk evaluasi",
+    )
+    # Argumen untuk memilih model (svm atau nb)
+    parser.add_argument(
+        "--model",
+        type=str,
+        choices=["svm", "nb"],
+        required=True,
+        help="Pilih model yang akan digunakan: 'svm' atau 'nb'",
+    )
 
-# Melakukan Preprocess
-stemming(data_train)
-stopword_removal(data_train)
-make_vectorizer()
-
-# Melakukan vektorisasi terhadap teks train
-data_train_text = vectorize_data(data_train)
-data_train_label = data_train["label"]
-
-# Melakukan train untuk membuat model svm dan nb
-svm_train(data_train_text, data_train_label)
-nb_train(data_train_text, data_train_label)
-
-######## EVAL ########
-data_test = pd.read_csv("E:/code/project-list/bert-hfacs/data/processed/test.csv")
-
-stemming(data_test)
-stopword_removal(data_test)
-
-data_test_text = vectorize_data(data_test)
-data_test_label = data_test["label"]
+    args = vars(parser.parse_args())
+    return args
 
 
-svm_path = "E:/code/project-list/bert-hfacs/models/svm_model.pkl"
-nb_path = "E:/code/project-list/bert-hfacs/models/nb_model.pkl"
+if __name__ == "__main__":
+    args = get_parser_ml()
 
-ml_eval(data_test_text, data_test_label, svm_path)
-ml_eval(data_test_text, data_test_label, nb_path)
+    # Memuat data berdasarkan mode
+    if args["mode"] == "train":
+        ######## TRAIN ########
+        data_train = pd.read_csv(
+            "E:/code/project-list/bert-hfacs/data/processed/train.csv"
+        )
+
+        # Melakukan Preprocess
+        stemming(data_train)
+        stopword_removal(data_train)
+        make_vectorizer()
+
+        # Melakukan vektorisasi terhadap teks train
+        data_train_text = vectorize_data(data_train)
+        data_train_label = data_train["label"]
+
+        # Melatih model berdasarkan pilihan
+        if args["model"] == "svm":
+            svm_train(data_train_text, data_train_label)
+        elif args["model"] == "nb":
+            nb_train(data_train_text, data_train_label)
+
+    elif args["mode"] == "eval":
+        ######## EVAL ########
+        data_test = pd.read_csv(
+            "E:/code/project-list/bert-hfacs/data/processed/test.csv"
+        )
+
+        # Melakukan Preprocess
+        stemming(data_test)
+        stopword_removal(data_test)
+
+        # Melakukan vektorisasi terhadap teks test
+        data_test_text = vectorize_data(data_test)
+        data_test_label = data_test["label"]
+
+        # Memuat model dan melakukan evaluasi berdasarkan pilihan
+        if args["model"] == "svm":
+            svm_path = "E:/code/project-list/bert-hfacs/models/svm_model.pkl"
+            print("Hasil Evaluasi SVM")
+            ml_eval(data_test_text, data_test_label, svm_path)
+        elif args["model"] == "nb":
+            nb_path = "E:/code/project-list/bert-hfacs/models/nb_model.pkl"
+            print("Hasil Evaluasi Naive Bayes")
+            ml_eval(data_test_text, data_test_label, nb_path)
+
+
+"""
+python ml_classifier.py --mode eval --model nb 
+python ml_classifier.py --mode train --model svm 
+"""
+"""
+def tokenize(data):
+    data["text"] = data["text"].apply(lambda x: re.findall(r"\b\w+\b", str(x)))
+    return data
+
+
+tokenize(data_train)
+"""
