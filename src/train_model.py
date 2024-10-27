@@ -17,17 +17,13 @@ def train_model(
     device="cuda",
 ):
     """
-    Fungsi untuk melatih model sequence classification.
-
-    Parameters:
+    Parameter:
     - model: Model PyTorch yang akan dilatih
     - train_loader: DataLoader untuk data pelatihan
     - optimizer: Optimizer PyTorch
     - n_epochs: Jumlah epoch pelatihan
     - i2w: Indeks ke kata (dictionary) untuk menerjemahkan indeks prediksi
-    - hfacs_metrics_fn: Fungsi untuk menghitung metrik pelatihan
-    - get_lr: Fungsi untuk mendapatkan nilai learning rate saat ini
-    - device: Perangkat yang digunakan, default "cuda"
+    - device: Device yang digunakan, default "cuda"
     """
 
     for epoch in range(n_epochs):
