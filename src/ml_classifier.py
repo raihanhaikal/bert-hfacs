@@ -1,37 +1,49 @@
 import pandas as pd
 import pickle
 import nltk
-from nltk.tokenize import word_tokenize
+import re
 from nltk.corpus import stopwords
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.svm import SVC
+from sklearn.naive_bayes import MultinomialNB
 from sklearn.metrics import classification_report, accuracy_score
+from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
+from Sastrawi.StopWordRemover.StopWordRemoverFactory import StopWordRemoverFactory
 
+
+data_train = pd.read_csv("E:/code/project-list/bert-hfacs/data/processed/train.csv")
+
+# Fungsi tokenisasi sederhana menggunakan regex
 def tokenize(data):
-    data["tokenize_text"] = data.cleaned_document.apply(lambda x: list(tokenize(x)))
-    data.sample(n=5, random_state=20).iloc[:, -2:]
+    data["text"] = data["text"].apply(lambda x: re.findall(r'\b\w+\b', str(x)))
     return data
 
-from gensim.utils import tokenize
-data = pd.read_csv(
-    "E:/code/project-list/bert-hfacs/data/processed/train.csv",
-)
+tokenize(data_train)
 
-data = tokenize(data["text"])
+def stemming(data):
+    # stemming
+    factory = StemmerFactory()
+    stemmer = factory.create_stemmer()
+    # Menerapkan stemming pada setiap baris teks di kolom 'text'
+    data['text'] = data['text'].apply(stemmer.stem)
+    return data
 
-data.sample(n=5, random_state=20).iloc[:, -2:]
+stemming(data_train)
 
 def stopword_removal(data):
+    factory = StopWordRemoverFactory()
+    stopword_remover = factory.create_stop_word_remover()
+    data['text'] = data['text'].apply(stopword_remover.remove)
+    return data
+
+stopword_removal(data_train)
 
 
 def make_vectorizer():
     data = pd.read_csv("E:/code/project-list/bert-hfacs/data/processed/train.csv")
-    nltk.download('stopwords')
-    stop_words_indonesia = stopwords.words('indonesian')
-    # Transforming text data into TF-IDF features
     vectorizer = TfidfVectorizer(
-        max_features=5000, stop_words=stop_words_indonesia
+        max_features=5000
     )  # Limiting to 5000 features for efficiency
     data = vectorizer.fit_transform(data)
     with open("E:/code/project-list/bert-hfacs/models/vectorizer.pkl", "wb") as file:
@@ -39,23 +51,37 @@ def make_vectorizer():
 
 make_vectorizer()
 
+data_train
+
 def vectorize_data(data):
     with open("E:/code/project-list/bert-hfacs/models/vectorizer.pkl", "rb") as file:
         vectorizer = pickle.load(file)
-    data = vectorizer.transform(data)
-    return data
+    x = vectorizer.transform(data['text'])
+    return x
 
-def embed_word2vec(data):
-    
+data_train_text = vectorize_data(data_train)
 
-def embed_fasttext(data):
+dense_array = data_train_text.toarray()
 
+print(dense_array)
 
-def svm_train():
+def svm_train(data):
+    svm_model = SVC(kernel="linear", random_state=1)
+    svm_model.fit(data["text"], data["label"])
+    with open("svm_model.pkl", "wb") as file:
+        pickle.dump(svm_model, file)
+        
+svm_train(data_train)
 
+def nb_train(data):
+    nb_model = MultinomialNB()  # Using a linear kernel
+    nb_model.fit(data["text"], data["label"])
+    with open("nb_model.pkl", "wb") as file:
+        pickle.dump(svm_model, file)
+        
+nb_train(data_train)
 
-def nb_train():
-    
+data_test = pd.read_csv("E:/code/project-list/bert-hfacs/data/processed/test.csv")
 
 def ml_eval():
 
@@ -101,7 +127,7 @@ data_test = pd.read_csv(
     "E:/code/project-list/bert-hfacs/data/processed/test.csv",
 )
 
-data_test = data_test["text"]
+
 
 data_test = vectorizer.transform(data_test)
 
