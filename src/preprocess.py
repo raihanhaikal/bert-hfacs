@@ -1,6 +1,8 @@
 import re
 import string
 import pandas as pd
+from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
+from Sastrawi.StopWordRemover.StopWordRemoverFactory import StopWordRemoverFactory
 from sklearn.model_selection import train_test_split
 
 data_train = pd.read_csv("E:/code/project-list/bert-hfacs/data/processed/train.csv")
@@ -8,31 +10,34 @@ data_train = pd.read_csv("E:/code/project-list/bert-hfacs/data/processed/train.c
 
 # Fungsi untuk membersihkan teks
 def clean_text(data):
-    data["text"] = data["text"].str.lower()  # Mengubah teks menjadi huruf kecil
-    data["text"] = data["text"].str.replace(
-        r"http\S+|www\S+|https\S+", "", regex=True
-    )  # Menghapus URL
-    data["text"] = data["text"].str.replace(
-        r"\S+@\S+", "", regex=True
-    )  # Menghapus email
-    data["text"] = data["text"].str.replace(
-        r"<.*?>", "", regex=True
-    )  # Menghapus tag HTML
-    data["text"] = data["text"].str.replace(r"\d+", "", regex=True)  # Menghapus angka
+    # Mengubah teks menjadi huruf kecil
+    data["text"] = data["text"].str.lower()
+    # Menghapus URL
+    data["text"] = data["text"].str.replace(r"http\S+|www\S+|https\S+", "", regex=True)
+    # Menghapus email
+    data["text"] = data["text"].str.replace(r"\S+@\S+", "", regex=True)
+    # Menghapus tag HTML
+    data["text"] = data["text"].str.replace(r"<.*?>", "", regex=True)
+    # Menghapus angka
+    data["text"] = data["text"].str.replace(r"\d+", "", regex=True)
+    # Menghapus tanda baca
     data["text"] = data["text"].str.replace(
         f"[{re.escape(string.punctuation)}]", "", regex=True
-    )  # Menghapus tanda baca
-    data["text"] = data["text"].str.replace(
-        r"[^\x00-\x7f]", "", regex=True
-    )  # Menghapus karakter khusus
-    data["text"] = (
-        data["text"].str.replace(r"\s+", " ", regex=True).str.strip()
-    )  # Menghapus spasi berlebih
+    )
+    # Menghapus karakter khusus
+    data["text"] = data["text"].str.replace(r"[^\x00-\x7f]", "", regex=True)
+    # Menghapus spasi berlebih
+    data["text"] = data["text"].str.replace(r"\s+", " ", regex=True).str.strip()
+    # Melakukan Stemming/lemmatization
+    factory = StemmerFactory()
+    stemmer = factory.create_stemmer()
+    data["text"] = data["text"].apply(stemmer.stem)
+    # Melakukan Stopword Removal
+    factory = StopWordRemoverFactory()
+    stopword_remover = factory.create_stop_word_remover()
+    data["text"] = data["text"].apply(stopword_remover.remove)
 
     return data
-
-
-data_clean = clean_text(data_train)
 
 
 def preprocessed(data):

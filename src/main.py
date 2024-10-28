@@ -7,6 +7,7 @@ from dataloader import HfacsDataloader
 from transformers import BertForSequenceClassification, BertConfig, BertTokenizer
 from train_model import train_model
 
+
 if __name__ == "__main__":
     # Membaca file Excel
     data_raw = pd.read_excel(

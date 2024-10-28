@@ -1,5 +1,4 @@
 import torch
-from torch import optim
 from dataset import HfacsDataset
 from dataloader import HfacsDataloader
 from transformers import BertForSequenceClassification, BertConfig, BertTokenizer
