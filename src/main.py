@@ -27,6 +27,15 @@ def get_parser():
     parser.add_argument("--batch_size", type=int, default=32, help="batch_size")
     parser.add_argument("--lr", type=int, default=5e-6, help="lr")
     parser.add_argument("--epoch", type=int, default=5, help="epoch")
+    parser.add_argument(
+        "--weight_decay", type=float, default=0.01, help="weight decay untuk optimizer"
+    )
+    parser.add_argument(
+        "--save_model_name",
+        type=str,
+        default="model.pth",
+        help="save nama model, tambahkan .pth",
+    )
     args = vars(parser.parse_args())
 
     return args
@@ -81,8 +90,8 @@ if __name__ == "__main__":
         sheet_name="Sheet1",
     )
 
-    # data_preprocessed = preprocessed(data_raw)
-    # train_dataset, test_dataset = split_data(data_preprocessed)
+    data_preprocessed = preprocessed(data_raw)
+    train_dataset, test_dataset = split_data(data_preprocessed)
 
     tokenizer = BertTokenizer.from_pretrained(model_path)
     config = BertConfig.from_pretrained(
@@ -114,19 +123,12 @@ if __name__ == "__main__":
 
     w2i, i2w = HfacsDataset.LABEL2INDEX, HfacsDataset.INDEX2LABEL
 
-    optimizer = optim.Adam(model.parameters(), lr=args["lr"])
+    optimizer = optim.Adam(
+        model.parameters(), lr=args["lr"], weight_decay=args["weight_decay"]
+    )
     model = model.cuda()
 
     train_model(model, train_loader, optimizer, n_epochs=args["epoch"], i2w=i2w)
 
     # Save Model
-    torch.save(model.state_dict(), "model.pth")
-
-    # Save Model dengan optimizer
-    torch.save(
-        {
-            "model_state_dict": model.state_dict(),
-            "optimizer_state_dict": optimizer.state_dict(),
-        },
-        "model_with_optimizer.pth",
-    )
+    torch.save(model.state_dict(), args["save_model_name"])
