@@ -1,5 +1,5 @@
 import torch
-from dataset import HfacsDataset
+from dataset import HfacsDataset, HfacsDatasetClass
 from dataloader import HfacsDataloader
 from transformers import BertForSequenceClassification, BertConfig, BertTokenizer
 from predict_model import evaluate_model
@@ -74,7 +74,7 @@ if __name__ == "__main__":
     tokenizer = BertTokenizer.from_pretrained(model_path)
     config = BertConfig.from_pretrained(
         model_path,
-        num_labels=HfacsDataset.NUM_LABELS,
+        num_labels=HfacsDatasetClass.NUM_LABELS,
     )
 
     # Instantiate model
@@ -83,16 +83,23 @@ if __name__ == "__main__":
         config=config,
     )
 
+    #model.load_state_dict(
+    #   torch.load(
+    #        "E:/code/project-list/bert-hfacs/models/model.pth",
+    #        weights_only=True,
+    #    )
+    #)
+    
     model.load_state_dict(
         torch.load(
-            "E:/code/project-list/bert-hfacs/models/model.pth",
+            "E:/code/project-list/bert-hfacs/models/model_class.pth",
             weights_only=True,
         )
     )
 
-    test_dataset_path = "E:/code/project-list/bert-hfacs/data/processed/test.csv"
+    test_dataset_path = "E:/code/project-list/bert-hfacs/data/data_class/test_class.csv"
 
-    test_dataset = HfacsDataset(test_dataset_path, tokenizer, lowercase=True)
+    test_dataset = HfacsDatasetClass(test_dataset_path, tokenizer, lowercase=True)
 
     test_loader = HfacsDataloader(
         dataset=test_dataset,
@@ -103,7 +110,7 @@ if __name__ == "__main__":
         pin_memory=True,
     )
 
-    w2i, i2w = HfacsDataset.LABEL2INDEX, HfacsDataset.INDEX2LABEL
+    w2i, i2w = HfacsDatasetClass.LABEL2INDEX, HfacsDatasetClass.INDEX2LABEL
 
     model = model.cuda()
 
