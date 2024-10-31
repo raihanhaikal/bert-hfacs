@@ -112,3 +112,24 @@ def split_data(data):
     )
 
     return train_dataset, test_dataset
+
+
+data_train = pd.read_csv("E:/code/project-list/bert-hfacs/data/processed/train.csv")
+data_test = pd.read_csv("E:/code/project-list/bert-hfacs/data/processed/test.csv")
+
+# Define a mapping for the labels
+label_mapping = {"ER": "UA", "VIO": "UA", "EF": "PRE", "CO": "PRE", "PF": "PRE"}
+
+# Apply the mapping to the 'label' column
+data_train["label"] = data_train["label"].map(label_mapping)
+data_test["label"] = data_test["label"].map(label_mapping)
+
+data_train = data_train.drop_duplicates()
+
+data_train.to_csv(
+    "E:/code/project-list/bert-hfacs/data/data_class/train_class.csv", index=False
+)
+
+data_test.to_csv(
+    "E:/code/project-list/bert-hfacs/data/data_class/test_class.csv", index=False
+)
