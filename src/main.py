@@ -2,7 +2,7 @@ import pandas as pd
 import torch
 from torch import optim
 from preprocess import preprocessed, split_data
-from dataset import HfacsDataset, HfacsDatasetClass
+from dataset import HfacsDataset
 from dataloader import HfacsDataloader
 from transformers import BertForSequenceClassification, BertConfig, BertTokenizer
 from train_model import train_model
@@ -90,8 +90,8 @@ if __name__ == "__main__":
         sheet_name="Sheet1",
     )
 
-    # data_preprocessed = preprocessed(data_raw)
-    # train_dataset, test_dataset = split_data(data_preprocessed)
+    data_preprocessed = preprocessed(data_raw)
+    train_dataset, test_dataset = split_data(data_preprocessed)
 
     tokenizer = BertTokenizer.from_pretrained(model_path)
     config = BertConfig.from_pretrained(
@@ -99,7 +99,7 @@ if __name__ == "__main__":
         num_hidden_layers=args["hidden_layer"],
         num_attention_heads=args["num_attention_heads"],
         hidden_size=args["hidden_size"],
-        num_labels=HfacsDatasetClass.NUM_LABELS,
+        num_labels=HfacsDataset.NUM_LABELS,
     )
 
     # Instantiate model
@@ -108,13 +108,9 @@ if __name__ == "__main__":
         config=config,
     )
 
-    # train_dataset_path = "E:/code/project-list/bert-hfacs/data/processed/train.csv"
-
     train_dataset_path = "E:/code/project-list/bert-hfacs/data/data_class/train_class.csv"
     
-
-    # train_dataset = HfacsDataset(train_dataset_path, tokenizer, lowercase=True)
-    train_dataset = HfacsDatasetClass(train_dataset_path, tokenizer, lowercase=True)
+    train_dataset = HfacsDataset(train_dataset_path, tokenizer, lowercase=True)
 
     train_loader = HfacsDataloader(
         dataset=train_dataset,
@@ -125,8 +121,7 @@ if __name__ == "__main__":
         pin_memory=True,
     )
 
-    #w2i, i2w = HfacsDataset.LABEL2INDEX, HfacsDataset.INDEX2LABEL
-    w2i, i2w = HfacsDatasetClass.LABEL2INDEX, HfacsDatasetClass.INDEX2LABEL
+    w2i, i2w = HfacsDataset.LABEL2INDEX, HfacsDataset.INDEX2LABEL
     
 
     optimizer = optim.Adam(
