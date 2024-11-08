@@ -13,6 +13,7 @@ if __name__ == "__main__":
     args = append_model_args(args)
 
     model_path = args["path"]
+ 
     # Membaca file Excel
     data_raw = pd.read_excel(
         "E:/code/project-list/bert-hfacs/data/raw/subclass_hfacs_dataset.xlsx",

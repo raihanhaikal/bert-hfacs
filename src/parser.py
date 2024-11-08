@@ -15,9 +15,9 @@ def get_train_parser():
         help="Nama Model",
     )
     parser.add_argument("--max_seq_len", type=int, default=512, help="max_seq_len")
-    parser.add_argument("--batch_size", type=int, default=32, help="batch_size")
-    parser.add_argument("--lr", type=int, default=5e-6, help="lr")
-    parser.add_argument("--epoch", type=int, default=5, help="epoch")
+    parser.add_argument("--batch_size", type=int, default=8, help="batch_size")
+    parser.add_argument("--lr", type=int, default=1e-6, help="lr")
+    parser.add_argument("--epoch", type=int, default=10, help="epoch")
     parser.add_argument(
         "--weight_decay", type=float, default=0.01, help="weight decay untuk optimizer"
     )
@@ -54,7 +54,7 @@ def get_eval_parser():
 def append_model_args(args):
     if args["model"] == "indobert_base_lite":
         args["path"] = (
-            "E:/code/project-list/bert-hfacs/models/models--indobenchmark--indobert-base-p1/snapshots/c2cd0b51ddce6580eb35263b39b0a1e5fb0a39e2"
+            "E:/code/project-list/bert-hfacs/models/indobert_lite_base"
         )
         args["hidden_layer"] = 12
         args["num_attention_heads"] = 12
@@ -62,7 +62,7 @@ def append_model_args(args):
 
     elif args["model"] == "indobert_base":
         args["path"] = (
-            "E:/code/project-list/bert-hfacs/models/models--indobenchmark--indobert-base-p1/snapshots/c2cd0b51ddce6580eb35263b39b0a1e5fb0a39e2"
+            "E:/code/project-list/bert-hfacs/models/indobert_base"
         )
         args["hidden_layer"] = 12
         args["num_attention_heads"] = 12
@@ -70,7 +70,7 @@ def append_model_args(args):
 
     elif args["model"] == "indobert_large_lite":
         args["path"] = (
-            "E:/code/project-list/bert-hfacs/models/models--indobenchmark--indobert-base-p1/snapshots/c2cd0b51ddce6580eb35263b39b0a1e5fb0a39e2"
+            "E:/code/project-list/bert-hfacs/models/indobert_lite_large"
         )
         args["hidden_layer"] = 24
         args["num_attention_heads"] = 16
@@ -78,7 +78,7 @@ def append_model_args(args):
 
     elif args["model"] == "indobert_large":
         args["path"] = (
-            "E:/code/project-list/bert-hfacs/models/models--indobenchmark--indobert-base-p1/snapshots/c2cd0b51ddce6580eb35263b39b0a1e5fb0a39e2"
+            "E:/code/project-list/bert-hfacs/models/indobert_large"
         )
         args["hidden_layer"] = 24
         args["num_attention_heads"] = 16
