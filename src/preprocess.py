@@ -5,7 +5,7 @@ from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
 from Sastrawi.StopWordRemover.StopWordRemoverFactory import StopWordRemoverFactory
 from sklearn.model_selection import train_test_split
 
-data_train = pd.read_csv("E:/code/project-list/bert-hfacs/data/processed/train.csv")
+
 
 
 # Fungsi untuk membersihkan teks
@@ -44,20 +44,14 @@ def preprocessed(data):
     # Karena dataset didapatkan dari hasil hfacs manual dengan Pak Ridwan maka di drop kolom "Alasan"
     data = data.drop(columns=["Alasan"])
 
-    # Mengganti simbol2
-    data = data.replace("-", 0)
-    data = data.replace("?", 0)
-    data = data.replace("--", 0)
-    data = data.fillna(0)
-
     # Mengganti tipe data
-    data["ER (LVL1)"] = data["ER (LVL1)"].astype(float)
-    data["VIO (LVL1)"] = data["VIO (LVL1)"].astype(float)
-    data["EF (LVL2)"] = data["EF (LVL2)"].astype(float)
-    data["CO (LVL2)"] = data["CO (LVL2)"].astype(float)
-    data["PF (LVL2)"] = data["PF (LVL2)"].astype(float)
+    data["ER (LVL1)"] = data["ER (LVL1)"].astype(str)
+    data["VIO (LVL1)"] = data["VIO (LVL1)"].astype(str)
+    data["EF (LVL2)"] = data["EF (LVL2)"].astype(str)
+    data["CO (LVL2)"] = data["CO (LVL2)"].astype(str)
+    data["PF (LVL2)"] = data["PF (LVL2)"].astype(str)
 
-    data["TARGET_LIST"] = data[
+    data["label"] = data[
         ["ER (LVL1)", "VIO (LVL1)", "EF (LVL2)", "CO (LVL2)", "PF (LVL2)"]
     ].values.tolist()
 
@@ -66,24 +60,21 @@ def preprocessed(data):
     )
 
     data = data.rename(columns={"Teks": "text"})
-    data = data.rename(columns={"TARGET_LIST": "label"})
 
     # Define the mapping dictionary for converting the one-hot encoded labels to their respective categories
     label_mapping = {
-        "[1.0, 0.0, 0.0, 0.0, 0.0]": "ER",
-        "[0.0, 1.0, 0.0, 0.0, 0.0]": "VIO",
-        "[0.0, 0.0, 1.0, 0.0, 0.0]": "EF",
-        "[0.0, 0.0, 0.0, 1.0, 0.0]": "CO",
-        "[0.0, 0.0, 0.0, 0.0, 1.0]": "PF",
+        "[1.0, 0.0, 0.0, 0.0, 0.0]": "UA",
+        "[0.0, 1.0, 0.0, 0.0, 0.0]": "UA",
+        "[0.0, 0.0, 1.0, 0.0, 0.0]": "PRE",
+        "[0.0, 0.0, 0.0, 1.0, 0.0]": "PRE",
+        "[0.0, 0.0, 0.0, 0.0, 1.0]": "PRE",
     }
-
-    # Convert the TARGET_LIST column to string for mapping
-    data["label"] = data["label"].astype(str)
 
     # Apply the label mapping
     data["label"] = data["label"].map(label_mapping)
 
     data = data.dropna()
+    data = data.drop_duplicates()
     data.to_csv(
         "E:/code/project-list/bert-hfacs/data/interim/data_preprocessed.csv",
         index=False,
@@ -112,25 +103,3 @@ def split_data(data):
     )
 
     return train_dataset, test_dataset
-
-
-data_train = pd.read_csv("E:/code/project-list/bert-hfacs/data/processed/train.csv")
-data_test = pd.read_csv("E:/code/project-list/bert-hfacs/data/processed/test.csv")
-
-# Define a mapping for the labels
-label_mapping = {"ER": "UA", "VIO": "UA", "EF": "PRE", "CO": "PRE", "PF": "PRE"}
-
-# Apply the mapping to the 'label' column
-data_train["label"] = data_train["label"].map(label_mapping)
-data_test["label"] = data_test["label"].map(label_mapping)
-
-data_train = data_train.drop_duplicates()
-
-data_train.to_csv(
-    "E:/code/project-list/bert-hfacs/data/data_class/train_class.csv", index=False
-)
-
-data_test.to_csv(
-    "E:/code/project-list/bert-hfacs/data/data_class/test_class.csv", index=False
-)
-
