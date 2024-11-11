@@ -1,15 +1,12 @@
 import re
 import string
-import pandas as pd
 from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
 from Sastrawi.StopWordRemover.StopWordRemoverFactory import StopWordRemoverFactory
 from sklearn.model_selection import train_test_split
 
-
-
-
 # Fungsi untuk membersihkan teks
 def clean_text(data):
+    data = data.rename(columns={"Teks": "text"})
     # Mengubah teks menjadi huruf kecil
     data["text"] = data["text"].str.lower()
     # Menghapus URL
@@ -44,12 +41,9 @@ def preprocessed(data):
     # Karena dataset didapatkan dari hasil hfacs manual dengan Pak Ridwan maka di drop kolom "Alasan"
     data = data.drop(columns=["Alasan"])
 
-    # Mengganti tipe data
-    data["ER (LVL1)"] = data["ER (LVL1)"].astype(str)
-    data["VIO (LVL1)"] = data["VIO (LVL1)"].astype(str)
-    data["EF (LVL2)"] = data["EF (LVL2)"].astype(str)
-    data["CO (LVL2)"] = data["CO (LVL2)"].astype(str)
-    data["PF (LVL2)"] = data["PF (LVL2)"].astype(str)
+    data = data.fillna(0)
+
+    data = clean_text(data)
 
     data["label"] = data[
         ["ER (LVL1)", "VIO (LVL1)", "EF (LVL2)", "CO (LVL2)", "PF (LVL2)"]
@@ -58,8 +52,6 @@ def preprocessed(data):
     data = data.drop(
         columns=["ER (LVL1)", "VIO (LVL1)", "EF (LVL2)", "CO (LVL2)", "PF (LVL2)"]
     )
-
-    data = data.rename(columns={"Teks": "text"})
 
     # Define the mapping dictionary for converting the one-hot encoded labels to their respective categories
     label_mapping = {
@@ -70,16 +62,17 @@ def preprocessed(data):
         "[0.0, 0.0, 0.0, 0.0, 1.0]": "PRE",
     }
 
+    data["label"] = data["label"].astype(str)
+
     # Apply the label mapping
     data["label"] = data["label"].map(label_mapping)
 
-    data = data.dropna()
     data = data.drop_duplicates()
+
     data.to_csv(
         "E:/code/project-list/bert-hfacs/data/interim/data_preprocessed.csv",
         index=False,
     )
-
     return data
 
 
