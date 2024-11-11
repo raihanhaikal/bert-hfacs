@@ -5,7 +5,7 @@ from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
 from Sastrawi.StopWordRemover.StopWordRemoverFactory import StopWordRemoverFactory
 from sklearn.model_selection import train_test_split
 
-data_train = pd.read_csv("E:/code/project-list/bert-hfacs/data/processed/train.csv")
+
 
 
 # Fungsi untuk membersihkan teks
