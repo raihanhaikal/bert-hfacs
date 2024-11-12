@@ -1,3 +1,4 @@
+import os
 import torch
 from sklearn.metrics import accuracy_score, f1_score, recall_score, precision_score
 
@@ -68,3 +69,26 @@ def metrics_to_string(metric_dict):
     for key, value in metric_dict.items():
         string_list.append("{}:{:.2f}".format(key, value))
     return " ".join(string_list)
+
+def save_model(model, save_model_name="model", save_model_dir="E:\\code\\project-list\\bert-hfacs\\models\\model_trained"):
+    """
+    Fungsi untuk menyimpan model ke direktori tertentu dengan nama file yang diberikan.
+    Nama file akan ditambahkan ekstensi .pth.
+
+    Args:
+        model: Model PyTorch yang akan disimpan.
+        save_model_name (str): Nama file model tanpa ekstensi (default "model").
+        save_model_dir (str): Direktori tempat model akan disimpan (default path tetap).
+    """
+    # Pastikan direktori ada, jika tidak buat
+    os.makedirs(save_model_dir, exist_ok=True)
+
+    # Gabungkan nama model dengan ekstensi .pth
+    save_model_name_with_extension = save_model_name + ".pth"
+
+    # Gabungkan direktori dan nama file model
+    save_path = os.path.join(save_model_dir, save_model_name_with_extension)
+
+    # Save model
+    torch.save(model.state_dict(), save_path)
+    print(f"Model saved to {save_path}")
