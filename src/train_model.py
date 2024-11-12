@@ -5,6 +5,7 @@ from utils import (
     metrics_to_string,
     hfacs_metrics_fn,
     get_lr,
+    plot_metrics
 )
 
 
@@ -25,7 +26,9 @@ def train_model(
     - i2w: Indeks ke kata (dictionary) untuk menerjemahkan indeks prediksi
     - device: Device yang digunakan, default "cuda"
     """
-
+    train_losses = []
+    train_accuracies = []
+    
     for epoch in range(n_epochs):
         model.train()
         torch.set_grad_enabled(True)
@@ -58,8 +61,14 @@ def train_model(
                 )
             )
 
-        # Calculate train metric
+        # Calculate Metrics
         metrics = hfacs_metrics_fn(list_hyp, list_label)
+        
+        # Take metric for plotting graph
+        train_acc = metrics["ACC"]
+        train_losses.append(total_train_loss / len(train_loader))
+        train_accuracies.append(train_acc)
+        
         print(
             "(Epoch {}) TRAIN LOSS:{:.4f} {} LR:{:.8f}".format(
                 (epoch + 1),
@@ -68,3 +77,7 @@ def train_model(
                 get_lr(optimizer),
             )
         )
+        
+    plot_metrics(train_losses, train_accuracies)
+        
+        

@@ -14,7 +14,7 @@ def get_train_parser():
     )
     parser.add_argument("--max_seq_len", type=int, default=512, help="max_seq_len")
     parser.add_argument("--batch_size", type=int, default=8, help="batch_size")
-    parser.add_argument("--lr", type=int, default=1e-6, help="lr")
+    parser.add_argument("--lr", type=int, default=1e-4, help="lr")
     parser.add_argument("--epoch", type=int, default=10, help="epoch")
     parser.add_argument(
         "--weight_decay", type=float, default=0.01, help="weight decay untuk optimizer"

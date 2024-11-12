@@ -1,5 +1,6 @@
 import os
 import torch
+import matplotlib.pyplot as plt
 from sklearn.metrics import accuracy_score, f1_score, recall_score, precision_score
 
 
@@ -104,3 +105,25 @@ def load_model(model, load_model_name="model", load_model_dir="E:/code/project-l
     )
     print("Model Weight Loaded")
     return model
+
+def plot_metrics(train_losses, train_accuracies):
+    """
+    Plot training loss and accuracy.
+
+    Parameters:
+    - train_losses: List of train losses per epoch
+    - train_accuracies: List of train accuracies per epoch
+    """
+    plt.figure(figsize=(10, 5))
+    plt.plot(train_losses, label="Train Loss", color='black', linestyle='solid', linewidth=2)
+    plt.plot(train_accuracies, label="Train Accuracy", color='black', linestyle='dotted', linewidth=2)
+    plt.xlabel("Epochs")
+    plt.ylabel("Metric Value")
+    plt.title("Training Loss and Accuracy")
+    
+    # Add grid and ticks
+    plt.grid(True)
+    plt.tick_params(axis='both', direction='in', length=6)
+    
+    plt.legend()
+    plt.show()
