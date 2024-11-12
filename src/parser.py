@@ -24,8 +24,8 @@ def get_train_parser():
     parser.add_argument(
         "--save_model_name",
         type=str,
-        default="model.pth",
-        help="save nama model, tambahkan .pth",
+        default="model",
+        help="save nama model",
     )
     args = vars(parser.parse_args())
 
@@ -46,7 +46,14 @@ def get_eval_parser():
         help="Nama Model",
     )
     parser.add_argument("--max_seq_len", type=int, default=512, help="max_seq_len")
-    parser.add_argument("--batch_size", type=int, default=32, help="batch_size")
+    parser.add_argument("--batch_size", type=int, default=8, help="batch_size")
+    parser.add_argument(
+        "--load_model_name",
+        type=str,
+        default="model",
+        help="load nama model",
+    )
+    
     args = vars(parser.parse_args())
 
     return args

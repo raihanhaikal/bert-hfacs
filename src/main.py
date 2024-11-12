@@ -1,5 +1,4 @@
 import pandas as pd
-import torch
 from torch import optim
 from preprocess import preprocessed, split_data
 from dataset import HfacsDataset
@@ -7,22 +6,30 @@ from dataloader import HfacsDataloader
 from transformers import BertForSequenceClassification, BertConfig, BertTokenizer
 from train_model import train_model
 from parser import get_train_parser, append_model_args
+from utils import save_model
+import os
 
 if __name__ == "__main__":
     args = get_train_parser()
     args = append_model_args(args)
 
     model_path = args["path"]
- 
-    # Membaca file Excel
-    data_raw = pd.read_excel(
-        "E:/code/project-list/bert-hfacs/data/raw/subclass_hfacs_dataset.xlsx",
-        sheet_name="Sheet1",
-    )
 
-    data_preprocessed = preprocessed(data_raw)
-    train_dataset, test_dataset = split_data(data_preprocessed)
+    dataset_path = "E:/code/project-list/bert-hfacs/data/processed/train.csv"
+    
+    # Cek apakah file 'train.csv' ada
+    if not os.path.exists(dataset_path):
+        print("File 'train.csv' tidak ditemukan, melanjutkan proses membuat dataset")
+        
+        # Membaca file Excel
+        data_raw = pd.read_excel(
+            "E:/code/project-list/bert-hfacs/data/raw/subclass_hfacs_dataset.xlsx",
+            sheet_name="Sheet1",
+        )
 
+        data_preprocessed = preprocessed(data_raw)
+        train_dataset, test_dataset = split_data(data_preprocessed)
+    
     tokenizer = BertTokenizer.from_pretrained(model_path)
     config = BertConfig.from_pretrained(
         model_path,
@@ -37,8 +44,8 @@ if __name__ == "__main__":
         model_path,
         config=config,
     )
-
-    train_dataset_path = "E:/code/project-list/bert-hfacs/data/data_class/train_class.csv"
+    
+    train_dataset_path = "E:/code/project-list/bert-hfacs/data/processed/train.csv"
     
     train_dataset = HfacsDataset(train_dataset_path, tokenizer, lowercase=True)
 
@@ -62,4 +69,4 @@ if __name__ == "__main__":
     train_model(model, train_loader, optimizer, n_epochs=args["epoch"], i2w=i2w)
 
     # Save Model
-    torch.save(model.state_dict(), args["save_model_name"])
+    save_model(model, save_model_name=args["save_model_name"])

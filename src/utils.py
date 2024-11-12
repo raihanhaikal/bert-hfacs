@@ -70,16 +70,7 @@ def metrics_to_string(metric_dict):
         string_list.append("{}:{:.2f}".format(key, value))
     return " ".join(string_list)
 
-def save_model(model, save_model_name="model", save_model_dir="E:\\code\\project-list\\bert-hfacs\\models\\model_trained"):
-    """
-    Fungsi untuk menyimpan model ke direktori tertentu dengan nama file yang diberikan.
-    Nama file akan ditambahkan ekstensi .pth.
-
-    Args:
-        model: Model PyTorch yang akan disimpan.
-        save_model_name (str): Nama file model tanpa ekstensi (default "model").
-        save_model_dir (str): Direktori tempat model akan disimpan (default path tetap).
-    """
+def save_model(model, save_model_name="model", save_model_dir="E:/code/project-list/bert-hfacs/models/model_trained/"):
     # Pastikan direktori ada, jika tidak buat
     os.makedirs(save_model_dir, exist_ok=True)
 
@@ -92,3 +83,24 @@ def save_model(model, save_model_name="model", save_model_dir="E:\\code\\project
     # Save model
     torch.save(model.state_dict(), save_path)
     print(f"Model saved to {save_path}")
+    
+
+def load_model(model, load_model_name="model", load_model_dir="E:/code/project-list/bert-hfacs/models/model_trained/"):
+    # Pastikan direktori ada, jika tidak buat
+    os.makedirs(load_model_dir, exist_ok=True)
+
+    # Gabungkan nama model dengan ekstensi .pth
+    load_model_name_with_extension = load_model_name + ".pth"
+
+    # Gabungkan direktori dan nama file model
+    load_path = os.path.join(load_model_dir, load_model_name_with_extension)
+
+    # Save model
+    model.load_state_dict(
+        torch.load(
+            load_path,
+            weights_only=True,
+        )
+    )
+    print("Model Weight Loaded")
+    return model

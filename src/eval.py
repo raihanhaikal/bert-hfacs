@@ -1,10 +1,9 @@
-import torch
 from dataset import HfacsDataset
 from dataloader import HfacsDataloader
 from transformers import BertForSequenceClassification, BertConfig, BertTokenizer
 from predict_model import evaluate_model
 from parser import get_eval_parser, append_model_args
-
+from utils import load_model
 
 if __name__ == "__main__":
     args = get_eval_parser()
@@ -15,6 +14,9 @@ if __name__ == "__main__":
     tokenizer = BertTokenizer.from_pretrained(model_path)
     config = BertConfig.from_pretrained(
         model_path,
+        num_hidden_layers=args["hidden_layer"],
+        num_attention_heads=args["num_attention_heads"],
+        hidden_size=args["hidden_size"],
         num_labels=HfacsDataset.NUM_LABELS,
     )
 
@@ -23,22 +25,10 @@ if __name__ == "__main__":
         model_path,
         config=config,
     )
-
-    #model.load_state_dict(
-    #   torch.load(
-    #        "E:/code/project-list/bert-hfacs/models/model.pth",
-    #        weights_only=True,
-    #    )
-    #)
     
-    model.load_state_dict(
-        torch.load(
-            "E:/code/project-list/bert-hfacs/models/model_class.pth",
-            weights_only=True,
-        )
-    )
+    model = load_model(model, args["load_model_name"])
 
-    test_dataset_path = "E:/code/project-list/bert-hfacs/data/data_class/test_class.csv"
+    test_dataset_path = "E:/code/project-list/bert-hfacs/data/processed/test.csv"
 
     test_dataset = HfacsDataset(test_dataset_path, tokenizer, lowercase=True)
 
