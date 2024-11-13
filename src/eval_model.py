@@ -24,6 +24,8 @@ def evaluate_model(model, test_loader, i2w, device="cuda", output_file="pred.txt
         df: DataFrame dengan hasil prediksi.
     """
     model.eval()
+    
+    # Freeze Layer
     torch.set_grad_enabled(False)
 
     list_hyp, list_label = [], []
