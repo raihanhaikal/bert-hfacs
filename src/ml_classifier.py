@@ -27,12 +27,12 @@ def make_vectorizer():
     data = pd.read_csv("E:/code/project-list/bert-hfacs/data/processed/train.csv")
     vectorizer = TfidfVectorizer(max_features=5000)
     data = vectorizer.fit_transform(data["text"])
-    with open("E:/code/project-list/bert-hfacs/models/vectorizer.pkl", "wb") as file:
+    with open("E:/code/project-list/bert-hfacs/models/ml_model/vectorizer.pkl", "wb") as file:
         pickle.dump(vectorizer, file)
 
 
 def vectorize_data(data):
-    with open("E:/code/project-list/bert-hfacs/models/vectorizer.pkl", "rb") as file:
+    with open("E:/code/project-list/bert-hfacs/models/ml_model/vectorizer.pkl", "rb") as file:
         vectorizer = pickle.load(file)
     data = vectorizer.transform(data["text"])
     return data
@@ -41,14 +41,14 @@ def vectorize_data(data):
 def svm_train(text, label):
     svm_model = SVC(kernel="linear", random_state=1)
     svm_model.fit(text, label)
-    with open("E:/code/project-list/bert-hfacs/models/svm_model.pkl", "wb") as file:
+    with open("E:/code/project-list/bert-hfacs/models/ml_model/svm_model.pkl", "wb") as file:
         pickle.dump(svm_model, file)
 
 
 def nb_train(text, label):
     nb_model = MultinomialNB()
     nb_model.fit(text, label)
-    with open("E:/code/project-list/bert-hfacs/models/nb_model.pkl", "wb") as file:
+    with open("E:/code/project-list/bert-hfacs/models/ml_model/nb_model.pkl", "wb") as file:
         pickle.dump(nb_model, file)
 
 
@@ -79,7 +79,7 @@ def get_parser_ml():
         type=str,
         choices=["train", "eval"],
         required=True,
-        help="Pilih mode operasi: 'train' untuk pelatihan atau 'eval' untuk evaluasi",
+        help="'train' untuk pelatihan atau 'eval' untuk evaluasi",
     )
     # Argumen untuk memilih model (svm atau nb)
     parser.add_argument(
@@ -87,7 +87,7 @@ def get_parser_ml():
         type=str,
         choices=["svm", "nb"],
         required=True,
-        help="Pilih model yang akan digunakan: 'svm' atau 'nb'",
+        help="Pilih model : 'svm' atau 'nb'",
     )
 
     args = vars(parser.parse_args())
@@ -135,24 +135,23 @@ if __name__ == "__main__":
 
         # Memuat model dan melakukan evaluasi berdasarkan pilihan
         if args["model"] == "svm":
-            svm_path = "E:/code/project-list/bert-hfacs/models/svm_model.pkl"
+            svm_path = "E:/code/project-list/bert-hfacs/models/ml_model/svm_model.pkl"
             print("Hasil Evaluasi SVM")
             ml_eval(data_test_text, data_test_label, svm_path)
         elif args["model"] == "nb":
-            nb_path = "E:/code/project-list/bert-hfacs/models/nb_model.pkl"
+            nb_path = "E:/code/project-list/bert-hfacs/models/ml_model/nb_model.pkl"
             print("Hasil Evaluasi Naive Bayes")
             ml_eval(data_test_text, data_test_label, nb_path)
 
 
-"""
-python ml_classifier.py --mode eval --model nb 
-python ml_classifier.py --mode train --model svm 
-"""
-"""
-def tokenize(data):
-    data["text"] = data["text"].apply(lambda x: re.findall(r"\b\w+\b", str(x)))
-    return data
+
+# python ml_classifier.py --mode eval --model nb 
+# python ml_classifier.py --mode train --model svm 
 
 
-tokenize(data_train)
-"""
+# def tokenize(data):
+#     data["text"] = data["text"].apply(lambda x: re.findall(r"\b\w+\b", str(x)))
+#     return data
+
+
+# tokenize(data_train)
