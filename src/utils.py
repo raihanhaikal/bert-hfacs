@@ -1,4 +1,6 @@
 import os
+import random
+import numpy as np
 import torch
 import matplotlib.pyplot as plt
 from sklearn.metrics import accuracy_score, f1_score, recall_score, precision_score
@@ -106,7 +108,7 @@ def load_model(model, load_model_name="model", load_model_dir="E:/code/project-l
     print("Model Weight Loaded")
     return model
 
-def plot_metrics(train_losses, train_accuracies, save_path=None):
+def plot_metrics(train_losses, train_accuracies, save_path= "E:/code/project-list/bert-hfacs/reports/graph", file_name=None):
     """
     Plot training loss and accuracy.
 
@@ -126,6 +128,13 @@ def plot_metrics(train_losses, train_accuracies, save_path=None):
     plt.tick_params(axis='both', direction='in', length=6)
     
     plt.legend()
-    if save_path:
-        plt.savefig(save_path, format='png')
+    file_name_with_extension = file_name + ".png"
+    full_path = os.path.join(save_path, file_name_with_extension)
+    plt.savefig(full_path, format='png')
     plt.show()
+    
+def set_seed(seed):
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed(seed)

@@ -3,11 +3,15 @@ from dataloader import HfacsDataloader
 from transformers import BertForSequenceClassification, BertConfig, BertTokenizer
 from eval_model import evaluate_model
 from parser import get_eval_parser, append_model_args
-from utils import load_model
+from utils import load_model, set_seed
 
 if __name__ == "__main__":
     args = get_eval_parser()
     args = append_model_args(args)
+    
+    # Seed fo CUDA
+    set_seed(1)
+    
     model_path = args["path"]
 
     # Load Tokenizer and Config

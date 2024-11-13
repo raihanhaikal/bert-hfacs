@@ -79,6 +79,6 @@ def train_model(
             )
         )
         
-    plot_metrics(train_losses, train_accuracies, save_path=save_model_name)
+    plot_metrics(train_losses, train_accuracies, file_name=save_model_name)
         
         

@@ -6,12 +6,15 @@ from dataloader import HfacsDataloader
 from transformers import BertForSequenceClassification, BertConfig, BertTokenizer
 from train_model import train_model
 from parser import get_train_parser, append_model_args
-from utils import save_model
+from utils import save_model, set_seed
 import os
 
 if __name__ == "__main__":
     args = get_train_parser()
     args = append_model_args(args)
+    
+    # Seed fo CUDA
+    set_seed(1)
 
     model_path = args["path"]
 
