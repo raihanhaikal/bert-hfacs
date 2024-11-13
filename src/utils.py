@@ -106,7 +106,7 @@ def load_model(model, load_model_name="model", load_model_dir="E:/code/project-l
     print("Model Weight Loaded")
     return model
 
-def plot_metrics(train_losses, train_accuracies):
+def plot_metrics(train_losses, train_accuracies, save_path=None):
     """
     Plot training loss and accuracy.
 
@@ -115,8 +115,8 @@ def plot_metrics(train_losses, train_accuracies):
     - train_accuracies: List of train accuracies per epoch
     """
     plt.figure(figsize=(10, 5))
-    plt.plot(train_losses, label="Train Loss", color='black', linestyle='solid', linewidth=2)
-    plt.plot(train_accuracies, label="Train Accuracy", color='black', linestyle='dotted', linewidth=2)
+    plt.plot(train_losses, label="Train Loss", color='black', linestyle='dotted', linewidth=2)
+    plt.plot(train_accuracies, label="Train Accuracy", color='black', linestyle='solid', linewidth=2)
     plt.xlabel("Epochs")
     plt.ylabel("Metric Value")
     plt.title("Training Loss and Accuracy")
@@ -126,4 +126,6 @@ def plot_metrics(train_losses, train_accuracies):
     plt.tick_params(axis='both', direction='in', length=6)
     
     plt.legend()
+    if save_path:
+        plt.savefig(save_path, format='png')
     plt.show()

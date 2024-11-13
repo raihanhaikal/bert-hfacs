@@ -66,7 +66,7 @@ if __name__ == "__main__":
     )
     model = model.cuda()
 
-    train_model(model, train_loader, optimizer, n_epochs=args["epoch"], i2w=i2w)
+    train_model(model, train_loader, optimizer, n_epochs=args["epoch"], i2w=i2w, save_model_name=args["save_model_name"])
 
     # Save Model
     save_model(model, save_model_name=args["save_model_name"])

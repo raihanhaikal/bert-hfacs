@@ -16,6 +16,7 @@ def train_model(
     n_epochs,
     i2w,
     device="cuda",
+    save_model_name=None,
 ):
     """
     Parameter:
@@ -78,6 +79,6 @@ def train_model(
             )
         )
         
-    plot_metrics(train_losses, train_accuracies)
+    plot_metrics(train_losses, train_accuracies, save_path=save_model_name)
         
         

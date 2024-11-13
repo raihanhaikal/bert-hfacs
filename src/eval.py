@@ -1,7 +1,7 @@
 from dataset import HfacsDataset
 from dataloader import HfacsDataloader
 from transformers import BertForSequenceClassification, BertConfig, BertTokenizer
-from predict_model import evaluate_model
+from eval_model import evaluate_model
 from parser import get_eval_parser, append_model_args
 from utils import load_model
 
