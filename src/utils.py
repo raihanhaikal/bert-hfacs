@@ -5,8 +5,6 @@ import torch
 import matplotlib.pyplot as plt
 from sklearn.metrics import accuracy_score, f1_score, recall_score, precision_score
 
-
-# Forward function for sequence classification
 def forward_sequence_classification(
     model, batch_data, i2w, is_test=False, device="cpu", **kwargs
 ):
@@ -42,7 +40,7 @@ def forward_sequence_classification(
     )
     loss, logits = outputs[:2]
 
-    # generate prediction & label list
+    # Generate prediction & label list
     list_hyp = []
     list_label = []
     hyp = torch.topk(logits, 1)[1]
@@ -108,20 +106,16 @@ def load_model(model, load_model_name="model", load_model_dir="E:/code/project-l
     print("Model Weight Loaded")
     return model
 
-def plot_metrics(train_losses, train_accuracies, save_path= "E:/code/project-list/bert-hfacs/reports/graph", file_name=None):
-    """
-    Plot training loss and accuracy.
 
-    Parameters:
-    - train_losses: List of train losses per epoch
-    - train_accuracies: List of train accuracies per epoch
-    """
+def plot_metrics_graph(train_losses, train_accuracies, save_path= "E:/code/project-list/bert-hfacs/reports/graph", file_name=None):
     plt.figure(figsize=(10, 5))
     plt.plot(train_losses, label="Train Loss", color='black', linestyle='dotted', linewidth=2)
     plt.plot(train_accuracies, label="Train Accuracy", color='black', linestyle='solid', linewidth=2)
     plt.xlabel("Epochs")
     plt.ylabel("Metric Value")
-    plt.title("Training Loss and Accuracy")
+    
+    title_with_file_name = "Training Loss and Accuracy " + file_name
+    plt.title(title_with_file_name)
     
     # Add grid and ticks
     plt.grid(True)
@@ -131,7 +125,46 @@ def plot_metrics(train_losses, train_accuracies, save_path= "E:/code/project-lis
     file_name_with_extension = file_name + ".png"
     full_path = os.path.join(save_path, file_name_with_extension)
     plt.savefig(full_path, format='png')
-    plt.show()
+    
+    #plt.show()
+    
+    
+def plot_metrics_table(train_accuracies, train_f1s, train_recalls, train_precisions, save_path="E:/code/project-list/bert-hfacs/reports/summary", file_name=None):
+    
+    fig, ax = plt.subplots(figsize=(6, 2)) 
+    # Convert dictionary metrics menjadi list untuk ditampilkan di tabel
+    
+    final_metrics = {
+        "ACC": train_accuracies[-1],
+        "F1": train_f1s[-1],
+        "REC": train_recalls[-1],
+        "PRE": train_precisions[-1]
+    }
+    data = [[key, f"{value:.4f}"] for key, value in final_metrics.items()]
+    columns = ["Metric", "Score"]
+
+    # Buat tabel
+    table = ax.table(cellText=data, colLabels=columns, cellLoc='center', loc='center')
+    table.auto_set_font_size(False)
+    table.set_fontsize(10)
+    table.scale(1.5, 1.5)
+    # Menambahkan border untuk seluruh tabel
+    table.auto_set_column_width([3, 2])
+
+    # Sesuaikan tampilan tabel
+    ax.axis("off")
+    
+    title_with_file_name = "Final Metrics Summary " + file_name
+    ax.set_title(title_with_file_name)
+
+    
+    
+    file_name_with_extension = file_name + ".png"
+    full_path = os.path.join(save_path, file_name_with_extension)
+    plt.savefig(full_path, format='png', bbox_inches="tight")
+
+    #plt.show()
+    
     
 def set_seed(seed):
     random.seed(seed)

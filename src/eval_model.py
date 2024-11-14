@@ -7,22 +7,7 @@ from utils import (
     hfacs_metrics_fn,
 )
 
-
 def evaluate_model(model, test_loader, i2w, device="cuda", output_file="pred.txt"):
-    """
-    Fungsi untuk evaluasi model sequence classification.
-
-    Args:
-        model: Model yang akan dievaluasi.
-        test_loader: DataLoader untuk data pengujian.
-        i2w: Dictionary untuk indeks ke kata (index-to-word).
-        device: Perangkat untuk pemrosesan (default: "cuda").
-        output_file: Nama file untuk menyimpan hasil prediksi (default: "pred.txt").
-
-    Returns:
-        metrics: Hasil metrik evaluasi.
-        df: DataFrame dengan hasil prediksi.
-    """
     model.eval()
     
     # Freeze Layer

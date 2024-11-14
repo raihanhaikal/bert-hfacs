@@ -5,9 +5,9 @@ from utils import (
     metrics_to_string,
     hfacs_metrics_fn,
     get_lr,
-    plot_metrics
+    plot_metrics_graph,
+    plot_metrics_table
 )
-
 
 def train_model(
     model,
@@ -18,17 +18,11 @@ def train_model(
     device="cuda",
     save_model_name=None,
 ):
-    """
-    Parameter:
-    - model: Model PyTorch yang akan dilatih
-    - train_loader: DataLoader untuk data pelatihan
-    - optimizer: Optimizer PyTorch
-    - n_epochs: Jumlah epoch pelatihan
-    - i2w: Indeks ke kata (dictionary) untuk menerjemahkan indeks prediksi
-    - device: Device yang digunakan, default "cuda"
-    """
     train_losses = []
     train_accuracies = []
+    train_f1s = []
+    train_recalls = []
+    train_precisions = []
     
     for epoch in range(n_epochs):
         model.train()
@@ -65,10 +59,12 @@ def train_model(
         # Calculate Metrics
         metrics = hfacs_metrics_fn(list_hyp, list_label)
         
-        # Take metric for plotting graph
-        train_acc = metrics["ACC"]
+        # Append metric list for further plot
         train_losses.append(total_train_loss / len(train_loader))
-        train_accuracies.append(train_acc)
+        train_accuracies.append(metrics["ACC"])
+        train_f1s.append(metrics["F1"])
+        train_recalls.append(metrics["REC"])
+        train_precisions.append(metrics["PRE"])
         
         print(
             "(Epoch {}) TRAIN LOSS:{:.4f} {} LR:{:.8f}".format(
@@ -78,7 +74,9 @@ def train_model(
                 get_lr(optimizer),
             )
         )
-        
-    plot_metrics(train_losses, train_accuracies, file_name=save_model_name)
+    
+    plot_metrics_graph(train_losses, train_accuracies, file_name=save_model_name)
+    plot_metrics_table(train_accuracies, train_f1s, train_recalls, train_precisions, file_name=save_model_name)
+    
         
         

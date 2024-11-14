@@ -10,18 +10,20 @@ from utils import save_model, set_seed
 import os
 
 if __name__ == "__main__":
+    
+    print("#################### TRAIN BEGIN ####################")
     args = get_train_parser()
     args = append_model_args(args)
     
-    # Seed fo CUDA
+    # Seed for CUDA
     set_seed(1)
 
     model_path = args["path"]
 
-    dataset_path = "E:/code/project-list/bert-hfacs/data/processed/train.csv"
+    train_dataset_path = "E:/code/project-list/bert-hfacs/data/processed/train.csv"
     
     # Cek apakah file 'train.csv' ada
-    if not os.path.exists(dataset_path):
+    if not os.path.exists(train_dataset_path):
         print("File 'train.csv' tidak ditemukan, melanjutkan proses membuat dataset")
         
         # Membaca file Excel
@@ -34,6 +36,18 @@ if __name__ == "__main__":
         train_dataset, test_dataset = split_data(data_preprocessed)
     
     tokenizer = BertTokenizer.from_pretrained(model_path)
+    
+    train_dataset = HfacsDataset(train_dataset_path, tokenizer, lowercase=True)
+    
+    train_loader = HfacsDataloader(
+        dataset=train_dataset,
+        max_seq_len=args["max_seq_len"],
+        batch_size=args["batch_size"],
+        num_workers=4,
+        shuffle=True,
+        pin_memory=True,
+    )
+    
     config = BertConfig.from_pretrained(
         model_path,
         num_hidden_layers=args["hidden_layer"],
@@ -48,22 +62,8 @@ if __name__ == "__main__":
         config=config,
     )
     
-    train_dataset_path = "E:/code/project-list/bert-hfacs/data/processed/train.csv"
-    
-    train_dataset = HfacsDataset(train_dataset_path, tokenizer, lowercase=True)
-
-    train_loader = HfacsDataloader(
-        dataset=train_dataset,
-        max_seq_len=args["max_seq_len"],
-        batch_size=args["batch_size"],
-        num_workers=4,
-        shuffle=True,
-        pin_memory=True,
-    )
-
     w2i, i2w = HfacsDataset.LABEL2INDEX, HfacsDataset.INDEX2LABEL
     
-
     optimizer = optim.Adam(
         model.parameters(), lr=args["lr"], weight_decay=args["weight_decay"]
     )
@@ -73,3 +73,5 @@ if __name__ == "__main__":
 
     # Save Model
     save_model(model, save_model_name=args["save_model_name"])
+    
+    print("#################### TRAIN END ####################")
