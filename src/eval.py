@@ -20,6 +20,18 @@ if __name__ == "__main__":
     
     # Load Tokenizer and Config
     tokenizer = BertTokenizer.from_pretrained(model_path)
+    
+    test_dataset = HfacsDataset(test_dataset_path, tokenizer, lowercase=True)
+
+    test_loader = HfacsDataloader(
+        dataset=test_dataset,
+        max_seq_len=args["max_seq_len"],
+        batch_size=args["batch_size"],
+        num_workers=4,
+        shuffle=False,
+        pin_memory=True,
+    )
+    
     config = BertConfig.from_pretrained(
         model_path,
         num_hidden_layers=args["hidden_layer"],
@@ -36,21 +48,10 @@ if __name__ == "__main__":
     
     model = load_model(model, args["load_model_name"])
 
-    test_dataset = HfacsDataset(test_dataset_path, tokenizer, lowercase=True)
-
-    test_loader = HfacsDataloader(
-        dataset=test_dataset,
-        max_seq_len=args["max_seq_len"],
-        batch_size=args["batch_size"],
-        num_workers=4,
-        shuffle=False,
-        pin_memory=True,
-    )
-
     w2i, i2w = HfacsDataset.LABEL2INDEX, HfacsDataset.INDEX2LABEL
 
     model = model.cuda()
 
-    evaluate_model(model, test_loader, i2w=i2w)
+    evaluate_model(model, test_loader, i2w=i2w, load_model_name=args["load_model_name"])
     print("#################### EVAL END ####################")
     

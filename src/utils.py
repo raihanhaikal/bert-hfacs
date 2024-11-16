@@ -3,6 +3,7 @@ import random
 import numpy as np
 import torch
 import matplotlib.pyplot as plt
+import pandas as pd
 from sklearn.metrics import accuracy_score, f1_score, recall_score, precision_score
 
 def forward_sequence_classification(
@@ -164,7 +165,52 @@ def plot_metrics_table(train_accuracies, train_f1s, train_recalls, train_precisi
     plt.savefig(full_path, format='png', bbox_inches="tight")
 
     #plt.show()
+
+def plot_metrics_table_eval(train_accuracies, train_f1s, train_recalls, train_precisions, save_path="E:/code/project-list/bert-hfacs/reports/summary_eval", file_name=None):
     
+    fig, ax = plt.subplots(figsize=(6, 2)) 
+    # Convert dictionary metrics menjadi list untuk ditampilkan di tabel
+    
+    final_metrics = {
+        "ACC": train_accuracies[-1],
+        "F1": train_f1s[-1],
+        "REC": train_recalls[-1],
+        "PRE": train_precisions[-1]
+    }
+    data = [[key, f"{value:.4f}"] for key, value in final_metrics.items()]
+    columns = ["Metric", "Score"]
+
+    # Buat tabel
+    table = ax.table(cellText=data, colLabels=columns, cellLoc='center', loc='center')
+    table.auto_set_font_size(False)
+    table.set_fontsize(10)
+    table.scale(1.5, 1.5)
+    # Menambahkan border untuk seluruh tabel
+    table.auto_set_column_width([3, 2])
+
+    # Sesuaikan tampilan tabel
+    ax.axis("off")
+    
+    title_with_file_name = "Final Metrics Summary " + file_name
+    ax.set_title(title_with_file_name)
+
+    
+    
+    file_name_with_extension = file_name + ".png"
+    full_path = os.path.join(save_path, file_name_with_extension)
+    plt.savefig(full_path, format='png', bbox_inches="tight")
+
+    #plt.show()
+    
+    
+def save_pred_to_txt(list_hyp, save_path="E:/code/project-list/bert-hfacs/reports/txt", file_name=None):
+    
+    file_name_with_extension = file_name + ".txt"
+    full_path = os.path.join(save_path, file_name_with_extension)
+    df = pd.DataFrame({"label": list_hyp}).reset_index()
+    df.to_csv(full_path, index=False)
+    
+    return df
     
 def set_seed(seed):
     random.seed(seed)
