@@ -6,6 +6,9 @@ from parser import get_eval_parser, append_model_args
 from utils import load_model, set_seed
 
 if __name__ == "__main__":
+    
+    print("#################### EVAL BEGIN ####################")
+    
     args = get_eval_parser()
     args = append_model_args(args)
     
@@ -13,7 +16,8 @@ if __name__ == "__main__":
     set_seed(1)
     
     model_path = args["path"]
-
+    test_dataset_path = "E:/code/project-list/bert-hfacs/data/processed/test.csv"
+    
     # Load Tokenizer and Config
     tokenizer = BertTokenizer.from_pretrained(model_path)
     config = BertConfig.from_pretrained(
@@ -32,8 +36,6 @@ if __name__ == "__main__":
     
     model = load_model(model, args["load_model_name"])
 
-    test_dataset_path = "E:/code/project-list/bert-hfacs/data/processed/test.csv"
-
     test_dataset = HfacsDataset(test_dataset_path, tokenizer, lowercase=True)
 
     test_loader = HfacsDataloader(
@@ -50,3 +52,5 @@ if __name__ == "__main__":
     model = model.cuda()
 
     evaluate_model(model, test_loader, i2w=i2w)
+    print("#################### EVAL END ####################")
+    
