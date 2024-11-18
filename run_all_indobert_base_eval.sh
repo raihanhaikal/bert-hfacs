@@ -33,3 +33,6 @@ python ./src/eval.py --model indobert_base --load_model_name indobert_base_E30_L
 # jangan lupa terminal sudah di folder src!
 # ./run_all_indobert_base_eval.sh
 
+python eval.py --model indobert_large --load_model_name indobert_large_no_train
+python eval.py --model indobert_base --load_model_name indobert_base_no_train
+python eval.py --model indobert_large --load_model_name indobert_base_E10_LR1e-5_BS12

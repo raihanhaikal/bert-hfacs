@@ -32,3 +32,4 @@ python ./src/train.py --model indobert_base --epoch 30 --lr 1e-4 --batch_size 16
 # jangan lupa terminal sudah di folder src!
 # ./run_all_indobert_base_train.sh
 
+python train.py --model indobert_large --epoch 10 --lr 1e-5 --batch_size 12 --save_model_name indobert_large_E10_LR1e-5_BS12
