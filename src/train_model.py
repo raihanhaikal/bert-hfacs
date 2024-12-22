@@ -77,6 +77,3 @@ def train_model(
     
     plot_metrics_graph(train_losses, train_accuracies, file_name=save_model_name)
     plot_metrics_table(train_accuracies, train_f1s, train_recalls, train_precisions, file_name=save_model_name)
-    
-        
-        

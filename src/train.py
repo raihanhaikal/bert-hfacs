@@ -1,14 +1,10 @@
-import pandas as pd
 from torch import optim
-from preprocess import preprocessed, split_data
 from dataset import HfacsDataset
 from dataloader import HfacsDataloader
 from transformers import BertForSequenceClassification, BertConfig, BertTokenizer
 from train_model import train_model
 from parser import get_train_parser, append_model_args
 from utils import save_model, set_seed
-import os
-
 if __name__ == "__main__":
     
     print("#################### TRAIN BEGIN ####################")
@@ -21,20 +17,7 @@ if __name__ == "__main__":
     model_path = args["path"]
 
     train_dataset_path = "E:/code/project-list/bert-hfacs/data/processed/train.csv"
-    
-    # Cek apakah file 'train.csv' ada
-    if not os.path.exists(train_dataset_path):
-        print("File 'train.csv' tidak ditemukan, melanjutkan proses membuat dataset")
-        
-        # Membaca file Excel
-        data_raw = pd.read_excel(
-            "E:/code/project-list/bert-hfacs/data/raw/subclass_hfacs_dataset.xlsx",
-            sheet_name="Sheet1",
-        )
 
-        data_preprocessed = preprocessed(data_raw)
-        train_dataset, test_dataset = split_data(data_preprocessed)
-    
     tokenizer = BertTokenizer.from_pretrained(model_path)
     
     train_dataset = HfacsDataset(train_dataset_path, tokenizer, lowercase=True)

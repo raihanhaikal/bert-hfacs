@@ -3,7 +3,7 @@ import pickle
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.svm import SVC
 from sklearn.naive_bayes import MultinomialNB
-from sklearn.metrics import classification_report, accuracy_score
+from sklearn.metrics import classification_report, accuracy_score, f1_score, recall_score, precision_score
 from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
 from Sastrawi.StopWordRemover.StopWordRemoverFactory import StopWordRemoverFactory
 from argparse import ArgumentParser
@@ -62,10 +62,16 @@ def ml_eval(text, label, model_path):
 
     # Menghitung akurasi dan laporan klasifikasi
     accuracy = accuracy_score(label, pred)
+    f1 = f1_score(label, pred, average="macro")
+    recall = recall_score(label, pred, average="macro")
+    precision = precision_score(label, pred, average="macro")
     report = classification_report(label, pred)
 
     # Menampilkan hasil evaluasi
-    print(f"Akurasi: {accuracy}")
+    print(f"accuracy: {accuracy}")
+    print(f"f1: {f1}")
+    print(f"recall: {recall}")
+    print(f"precision: {precision}")
     print(f"Laporan Klasifikasi:\n{report}")
 
     return accuracy, report
@@ -145,13 +151,8 @@ if __name__ == "__main__":
 
 
 
+# python ml_classifier.py --mode train --model nb 
 # python ml_classifier.py --mode eval --model nb 
-# python ml_classifier.py --mode train --model svm 
 
-
-# def tokenize(data):
-#     data["text"] = data["text"].apply(lambda x: re.findall(r"\b\w+\b", str(x)))
-#     return data
-
-
-# tokenize(data_train)
+# python ml_classifier.py --mode train --model svm
+# python ml_classifier.py --mode eval --model svm 

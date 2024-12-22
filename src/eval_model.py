@@ -9,10 +9,6 @@ from utils import (
 )
 
 def evaluate_model(model, test_loader, i2w, device="cuda", load_model_name = None):
-    model.eval()
-    
-    # Freeze Layer
-    torch.set_grad_enabled(False)
 
     list_hyp, list_label = [], []
     eval_accuracies = []
@@ -20,6 +16,10 @@ def evaluate_model(model, test_loader, i2w, device="cuda", load_model_name = Non
     eval_recalls = []
     eval_precisions = []
     
+    model.eval()
+    
+    # Freeze Layer
+    torch.set_grad_enabled(False)
 
     pbar = tqdm(test_loader, leave=True, total=len(test_loader))
     for i, batch_data in enumerate(pbar):
@@ -37,14 +37,11 @@ def evaluate_model(model, test_loader, i2w, device="cuda", load_model_name = Non
     eval_recalls.append(metrics["REC"])
     eval_precisions.append(metrics["PRE"])    
     print("{}".format(metrics_to_string(metrics)))
-
-    # Simpan prediksi ke file CSV
     
     plot_metrics_table_eval(eval_accuracies, eval_f1s, eval_recalls, eval_precisions, file_name=load_model_name)
     
     df = save_pred_to_txt(list_hyp, file_name=load_model_name)
-
-
+    
     print(df)
-
-    return metrics, df
+    
+    return metrics

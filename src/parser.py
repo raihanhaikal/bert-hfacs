@@ -12,7 +12,7 @@ def get_train_parser():
         required=True,
         help="Nama Model",
     )
-    parser.add_argument("--max_seq_len", type=int, default=512, help="max_seq_len")
+    parser.add_argument("--max_seq_len", type=int, default=256, help="max_seq_len")
     parser.add_argument("--batch_size", type=int, default=8, help="batch_size")
     parser.add_argument("--lr", type=float, default=1e-4, help="lr")
     parser.add_argument("--epoch", type=int, default=10, help="epoch")
