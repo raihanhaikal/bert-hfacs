@@ -1,3 +1,4 @@
+import torch
 from dataset import HfacsDataset
 from dataloader import HfacsDataloader
 from transformers import BertForSequenceClassification, BertConfig, BertTokenizer
@@ -46,11 +47,13 @@ if __name__ == "__main__":
         config=config,
     )
     
-    model = load_model(model, args["load_model_name"])
+    model = load_model(model, load_model_name=args["load_model_name"])
 
     w2i, i2w = HfacsDataset.LABEL2INDEX, HfacsDataset.INDEX2LABEL
 
-    model = model.cuda()
+    # Periksa apakah CUDA tersedia dan pindahkan model ke perangkat yang sesuai
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    model.to(device)
 
     evaluate_model(model, test_loader, i2w=i2w, load_model_name=args["load_model_name"])
     print("#################### EVAL END ####################")

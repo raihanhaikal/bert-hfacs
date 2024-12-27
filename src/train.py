@@ -1,3 +1,4 @@
+import torch
 from torch import optim
 from dataset import HfacsDataset
 from dataloader import HfacsDataloader
@@ -5,6 +6,7 @@ from transformers import BertForSequenceClassification, BertConfig, BertTokenize
 from train_model import train_model
 from parser import get_train_parser, append_model_args
 from utils import save_model, set_seed
+
 if __name__ == "__main__":
     
     print("#################### TRAIN BEGIN ####################")
@@ -50,7 +52,9 @@ if __name__ == "__main__":
     optimizer = optim.Adam(
         model.parameters(), lr=args["lr"], weight_decay=args["weight_decay"]
     )
-    model = model.cuda()
+    
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    model.to(device)
 
     train_model(model, train_loader, optimizer, n_epochs=args["epoch"], i2w=i2w, save_model_name=args["save_model_name"])
 

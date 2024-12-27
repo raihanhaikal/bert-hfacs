@@ -17,12 +17,12 @@ def forward_sequence_classification(
         (subword_batch, mask_batch, token_type_batch, label_batch) = batch_data
 
     # Prepare input & label
-    subword_batch = torch.LongTensor(subword_batch)
-    mask_batch = torch.FloatTensor(mask_batch)
+    subword_batch = torch.LongTensor(subword_batch).to(device)
+    mask_batch = torch.FloatTensor(mask_batch).to(device)
     token_type_batch = (
-        torch.LongTensor(token_type_batch) if token_type_batch is not None else None
+        torch.LongTensor(token_type_batch).to(device) if token_type_batch is not None else None
     )
-    label_batch = torch.LongTensor(label_batch)
+    label_batch = torch.LongTensor(label_batch).to(device)
 
     if device == "cuda":
         subword_batch = subword_batch.cuda()
@@ -94,6 +94,9 @@ def load_model(model, load_model_name="model", load_model_dir="E:/code/project-l
     # Gabungkan nama model dengan ekstensi .pth
     load_model_name_with_extension = load_model_name + ".pth"
 
+    # Jika CUDA tidak tersedia, muat model ke CPU
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    
     # Gabungkan direktori dan nama file model
     load_path = os.path.join(load_model_dir, load_model_name_with_extension)
 
@@ -102,6 +105,7 @@ def load_model(model, load_model_name="model", load_model_dir="E:/code/project-l
         torch.load(
             load_path,
             weights_only=True,
+            map_location=device,
         )
     )
     print("Model Weight Loaded")

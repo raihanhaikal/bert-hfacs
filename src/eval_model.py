@@ -1,5 +1,7 @@
 import torch
 from tqdm import tqdm
+#from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
+#import matplotlib.pyplot as plt
 from utils import (
     forward_sequence_classification,
     metrics_to_string,
@@ -20,6 +22,8 @@ def evaluate_model(model, test_loader, i2w, device="cuda", load_model_name = Non
     
     # Freeze Layer
     torch.set_grad_enabled(False)
+    
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
     pbar = tqdm(test_loader, leave=True, total=len(test_loader))
     for i, batch_data in enumerate(pbar):
@@ -30,6 +34,11 @@ def evaluate_model(model, test_loader, i2w, device="cuda", load_model_name = Non
         list_label += batch_label
 
     # Hitung metrik evaluasi
+    #cm = confusion_matrix(list_label, list_hyp, labels=["UA", "PRE"])
+    #disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=["UA", "PRE"])
+    #disp.plot()
+    #plt.show()
+    
     metrics = hfacs_metrics_fn(list_hyp, list_label)
     
     eval_accuracies.append(metrics["ACC"])

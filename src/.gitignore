@@ -5,6 +5,9 @@ __pycache__/
 # virtual env
 .conda
 .venv
+.lp-venv
+.lp-venv/
+
 
 # C extensions
 *.so
